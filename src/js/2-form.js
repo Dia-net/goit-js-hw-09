@@ -13,15 +13,23 @@ form.addEventListener('input', e =>{
     };
     saveToLS(feedback_form_state, data)
 });
+
 form.addEventListener('submit', e => {
     e.preventDefault();
-  
+    const userEmail = form.elements.email.value;
+    const userMessage = form.elements.message.value;
+    if (userEmail && userMessage){
     const data = loadFromLS(feedback_form_state) || {};
     console.log(data);
   
     localStorage.removeItem(feedback_form_state);
     form.reset();
+    }
+    else {
+        alert('Please fill in both email and message fields.');
+    }
   });
+
 
 function loadFromLS(key = 'empty') {
     const data = localStorage.getItem(key); 
@@ -35,9 +43,13 @@ function loadFromLS(key = 'empty') {
   }
   
   function saveToLS(key, value) {
-    const jsonData = JSON.stringify(value);
+    const trimValue = Object.fromEntries(
+        Object.entries(value).map(([key, val]) => [key, val.trim()])
+    );
+    const jsonData = JSON.stringify(trimValue);
     localStorage.setItem(key, jsonData);
   }
+
   function restoreData() {
     const data = loadFromLS(feedback_form_state) || {};
   
@@ -46,4 +58,5 @@ function loadFromLS(key = 'empty') {
   }
   
   restoreData();
+  
   
